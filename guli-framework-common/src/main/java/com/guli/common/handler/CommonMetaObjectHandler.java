@@ -1,4 +1,4 @@
-package com.guli.common.com.guli.common.handler;
+package com.guli.common.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import lombok.extern.slf4j.Slf4j;

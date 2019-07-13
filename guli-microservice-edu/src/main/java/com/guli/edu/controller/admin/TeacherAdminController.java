@@ -1,6 +1,8 @@
 package com.guli.edu.controller.admin;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.guli.common.constants.ResultCodeEnum;
+import com.guli.common.exception.GuliException;
 import com.guli.common.vo.R;
 import com.guli.edu.com.guli.edu.query.TeacherQuery;
 import com.guli.edu.entity.Teacher;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(description="讲师管理")
+@Api(description = "讲师管理")
 @RestController
 @RequestMapping("/admin/edu/teacher")
 @CrossOrigin
@@ -24,7 +26,7 @@ public class TeacherAdminController {
 
     @ApiOperation(value = "所有讲师列表")
     @GetMapping
-    public R list(){
+    public R list() {
         List<Teacher> list = teacherService.list(null);
         return R.ok().data("items", list);//链式调用
     }
@@ -33,7 +35,7 @@ public class TeacherAdminController {
     @DeleteMapping("{id}")
     public R removeById(
             @ApiParam(name = "id", value = "讲师ID", required = true)
-            @PathVariable String id){
+            @PathVariable String id) {
         teacherService.removeById(id);
         return R.ok();
     }
@@ -49,7 +51,10 @@ public class TeacherAdminController {
             @PathVariable Long limit,
 
             @ApiParam(name = "teacherQuery", value = "查询对象", required = false)
-            TeacherQuery teacherQuery){
+                    TeacherQuery teacherQuery) {
+            if (page <= 0 || limit <= 0) {
+                throw new GuliException(ResultCodeEnum.PARAM_ERROR);
+            }
 
         Page<Teacher> pageParam = new Page<>(page, limit);//page：页码 limit：每页记录数
 
@@ -57,14 +62,14 @@ public class TeacherAdminController {
         List<Teacher> records = pageParam.getRecords();//获取当前页面的数据
         long total = pageParam.getTotal();//获取总记录数
 
-        return  R.ok().data("total", total).data("rows", records);
+        return R.ok().data("total", total).data("rows", records);
     }
 
     @ApiOperation(value = "新增讲师")
     @PostMapping
     public R save(
             @ApiParam(name = "teacher", value = "讲师对象", required = true)
-            @RequestBody Teacher teacher){
+            @RequestBody Teacher teacher) {
 
         teacherService.save(teacher);
         return R.ok();
@@ -74,7 +79,7 @@ public class TeacherAdminController {
     @GetMapping("{id}")
     public R getById(
             @ApiParam(name = "id", value = "讲师ID", required = true)
-            @PathVariable String id){
+            @PathVariable String id) {
 
         Teacher teacher = teacherService.getById(id);
         return R.ok().data("item", teacher);
@@ -87,7 +92,7 @@ public class TeacherAdminController {
             @PathVariable String id,
 
             @ApiParam(name = "teacher", value = "讲师对象", required = true)
-             Teacher teacher){
+                    Teacher teacher) {
 
         teacher.setId(id);
         teacherService.updateById(teacher);

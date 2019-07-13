@@ -74,4 +74,6 @@ public class R {
         this.setData(map);//为data赋值
         return this;
     }
+
+
 }
